@@ -1,12 +1,25 @@
 // start up point for the client side app
+import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
+import { createStore, applyMiddleware } from 'redux';
+import { createLogger } from 'redux-logger';
+import thunk from 'redux-thunk';
+import { Provider } from 'react-redux';
 import Routes from './Routes';
+import reducers from './reducers';
+
+const middleware = applyMiddleware(thunk, createLogger());
+const store = createStore(reducers, {}, middleware);
+
+
 
 ReactDOM.hydrate(
-  <BrowserRouter>
-    <Routes />
-  </BrowserRouter>, 
+  <Provider store={store}>
+    <BrowserRouter>
+      <Routes />
+    </BrowserRouter>
+  </Provider>, 
   document.querySelector('#root')
 );
