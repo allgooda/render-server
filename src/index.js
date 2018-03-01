@@ -1,11 +1,20 @@
 import 'babel-polyfill';
 import express from 'express';
 import { matchRoutes } from 'react-router-config';
+import proxy from 'express-http-proxy';
 import Routes from './client/Routes';
 import renderer from './helpers/renderer';
 import createStore from './helpers/createStore';
 
 const app = express();
+
+app.use('/api', proxy('htp://react-ssr-api.herokuapp.com', {
+  //following lines not needed for personal app
+  proxyReqOptDecorator(opts) {
+    opts.header['x-forward-host'] = 'localhost:3000';
+    return opts;
+  }
+}))
 
 app.use(express.static('public'));
 app.get('*', (req, res) => { 
